@@ -1,0 +1,48 @@
+Table or Figure Name,File Name,Original Name,Original Location,
+Figure 1,,,,
+Figure 2,,,,
+Figure 3,,,,
+Figure 4,event.do,event.do,,
+Figure 5,figure5-7.ipynb,benchmark_GH.ipynb,./ztrax_FL/mangrove_value_code/DataViz/Main_effect,
+Figure 6,figure5-7.ipynb,benchmark_GH.ipynb,,
+Figure 7,figure5-7.ipynb,benchmark_GH.ipynb,./ztrax_FL/mangrove_value_code/DataViz/Main_effect,ResultsChartTORedo_withpath2.csv (specification without pre-hurricane years)
+Figure 8,distance_benefit_map_benchmark,distance_benefit_map_benchmark,./ztrax_FL/Econ_paper/results,
+Figure 8,"figure9.ipynb
+figure9.do","- distance_width_heatmap.ipynb
+- Main_width_bins_midrisk_newbenchmark",./ztrax_FL/mangrove_value_code/DataViz,
+Figure 10,figure10.R,ridgeplot_new.R,./ztrax_FL/mangrove_value_code/DataViz/VaR,
+,figure10&11_etl.do,Pricechange_recalibrateGH.do + Pricechange_recalibrate.do,./ztrax_FL/mangrove_value_code/Estimation/Distance_price_dispersion,
+Figure 11,figure11.R,"3 files
+- ridgeplot-sandy-082323.R
+- ridgeplot-irma-082323.R
+- ridgeplot-ivan-082323.R",./ztrax_FL/mangrove_value_code/DataViz/VaR,
+,figure10&11_etl.do,,,
+Figure 12,wtp.ipynb,wtp.ipynb,./ztrax_FL/Econ_paper/Progs,
+,,,,
+,,,,
+Table 1: Effect of Mangroves on House Sale Prices after Hurricanes,table1.do,,,
+Table 2: Effect of Mangroves on House Sale Prices after Hurricanes,Tables2-3.do,GHregsForPaper.do / Mangrove_learning_GH,./ztrax_FL/mangrove_value_code/Estimation/Robustness,
+Table 3: Effect of Mangroves on Prices after Hurricanes: Accounting for Hurricane Path,Tables2-3.do,GHregsForPaper.do / Mangrove_learning_GH,./ztrax_FL/mangrove_value_code/Estimation/Robustness,
+Table 4: Effect of Mangroves on Price Dispersion after Hurricanes,table3.do,benchmark-no_distance_delta_i.do,./ztrax_FL/mangrove_value_code/Estimation/Robustness,
+,,,,
+,,,,
+,,,,
+,,,,
+,,,,
+APPENDIX,,,,
+Appendix a.2,appendix.a.2.do,Main_scatterplot.do,./ztrax_FL/mangrove_value_code/DataViz,
+Appendix a.4,appendix.a.4.do,distance_time_analysis.do,,
+Appendix a.5,"appendix.a.5.do
+appendix.a.5.ipynb","1. Main_flood_robust1.do
+2. Presentation_042123.ipynb","1. /ztrax_FL/mangrove_value_code/Estimation/Robustness/flood-risk
+
+2. /ztrax_FL/mangrove_value_code/DataViz/Main_effect",
+Appendix a.6,,,,
+Appendix a.7,appendix.a.7.do,"1. benchmark-seperateyears.do
+2. Mangrove_dummy.do
+3. Main_propertyfe_squarefoot.do
+4. benchmark-agg_level.do 
+5. benchmark-weights.do
+6. benchmark-lehman.do",,
+Appendix a.8,appendix.a.8.do,benchmark-insurance.do,/mangrove_value_code/Estimation/Robustness/insurance_belief,
+Appendix a.9,appendix.a.9.do,benchmark-belief.do,/mangrove_value_code/Estimation/Robustness/insurance_belief,

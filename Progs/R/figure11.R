@@ -1,0 +1,460 @@
+# Note: this script is used to generate the price dispersion (VaR graph) ridgeplot of Hurricane Ivan, Sandy, and Irma
+# Step 1. import preprocessed data (e.g., pricediff_ivan_reshape.csv)
+# Step 2. calculate empirical CDF for each county and mangrove condition
+# Step 3. plot the ridgeplot with shaded area for VaR effect, automatically incorporating the empirical CDF values
+
+rm(list=ls())
+
+library(haven)
+#install.packages("ggridges")
+library(ggridges)
+library(ggplot2)
+library(dplyr)
+library(viridis)  # Example color palette library
+
+
+setwd("./Analysis/Results/Figures")
+
+
+######graph 1: Hurricane Ivan Price Dispersion Ridgeplot
+# Step 1. import preprocessed data (pricediff_ivan_reshape.csv)--(similar data structure to "pricediff_combo.csv")
+
+
+# df_mang <- read.csv("~/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/salesprice_b_a_mang.csv", header=TRUE, sep=",")
+# df_mang <- read.csv("~/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_sandy2_b_reshape.csv", header=TRUE, sep=",")
+
+# df_mang <- read.csv("~/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_ivan_reshape.csv", header=TRUE, sep=",")
+# df_mang <- read.csv("~/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_ivan_update_reshape.csv", header=TRUE, sep=",")
+# df_mang <- read.csv("~/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_ivan_update_newbenchmark_reshape.csv", header=TRUE, sep=",")
+# df_mang <- read.csv("~/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_ivan_R.csv", header=TRUE, sep=",")
+
+df_mang <- read.csv("../../Data/pricediff_ivan_update_newbenchmark.csv", header=TRUE, sep=",")
+
+#salesprice_b_a_plot <- read_dta("Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/salesprice_b_a_plot.dta")
+
+# variables_to_filter <- c("pricediff_ivan_noajust", "pricediff_sandy_noajust", "pricediff_sandy2_noajust", "pricediff_irma_noajust",
+#                          "pricediff_irma2_noajust", "pricediff_irma3_noajust")
+# df_filtered <- df %>%
+#   filter_at(vars(all_of(variables_to_filter)), all_vars(. <= 200))
+
+
+##filter out values greater than 200
+# df_filtered <- df %>% filter(pricediff_sandy2_noajust <= 200)
+# df_mang_filtered <- df_mang %>% filter(pricediff_sandy2_mang <= 200)
+df_mang_filtered <- df_mang %>% filter(pricediff_calib <= 200 & pricediff_calib >= -100)
+
+# Modify county names to add * for selected counties
+df_mang_filtered <- df_mang_filtered %>%
+  mutate(fips_name = ifelse(fips_name %in% c("Miami", "Hillsborough", "Collier"), paste0(fips_name, "*"), fips_name))
+
+# Order the county names in reverse alphabetical order  
+df_mang_filtered$fips_name <- factor(df_mang_filtered$fips_name,
+                                     levels = rev(sort(unique(df_mang_filtered$fips_name))))
+
+
+
+# Step 2. calculate empirical CDF
+#define a function to caclulate empirical CDF
+  #ecdf is a built-in function in R
+calculate_cdf_for_condition <- function(data, fips_name_condition, mangrove_condition, threshold) {
+  # Filter the data based on the specified conditions
+  filtered_data <- data[data$fips_name == fips_name_condition & data$mangrove == mangrove_condition, ]
+  # Calculate the CDF for the filtered data
+  cdf <- ecdf(filtered_data$pricediff_calib)
+  # Calculate and return the CDF value at the specified threshold
+  return(cdf(threshold))
+}
+
+
+
+# Calculate the CDF for the specified conditions
+  #for example, 'df_value_1y' calculate the CDF for the condition of "Pinellas" and "Yes" (mangrove within 2km)
+cdf_value_7y <- calculate_cdf_for_condition(df_mang_filtered, "Pinellas", "Yes", -25)
+# print(cdf_value_1y)
+cdf_value_7n <- calculate_cdf_for_condition(df_mang_filtered, "Pinellas", "No", -25)
+print(cdf_value_7y - cdf_value_7n)
+
+cdf_value_6y <- calculate_cdf_for_condition(df_mang_filtered, "Miami*", "Yes", -25)
+cdf_value_6n <- calculate_cdf_for_condition(df_mang_filtered, "Miami*", "No", -25)
+print(cdf_value_6y - cdf_value_6n)
+
+cdf_value_5y <- calculate_cdf_for_condition(df_mang_filtered, "Manatee", "Yes", -25)
+cdf_value_5n <- calculate_cdf_for_condition(df_mang_filtered, "Manatee", "No", -25)
+print(cdf_value_5y - cdf_value_5n)
+
+cdf_value_4y <- calculate_cdf_for_condition(df_mang_filtered, "Lee", "Yes", -25)
+cdf_value_4n <- calculate_cdf_for_condition(df_mang_filtered, "Lee", "No", -25)
+print(cdf_value_4y - cdf_value_4n)
+
+cdf_value_3y <- calculate_cdf_for_condition(df_mang_filtered, "Hillsborough*", "Yes", -25)
+cdf_value_3n <- calculate_cdf_for_condition(df_mang_filtered, "Hillsborough*", "No", -25)
+print(cdf_value_3y - cdf_value_3n)
+
+cdf_value_2y <- calculate_cdf_for_condition(df_mang_filtered, "Collier*", "Yes", -25)
+cdf_value_2n <- calculate_cdf_for_condition(df_mang_filtered, "Collier*", "No", -25)
+print(cdf_value_2y - cdf_value_2n)
+
+
+cdf_value_1y <- calculate_cdf_for_condition(df_mang_filtered, "Charlotte", "Yes", -25)
+cdf_value_1n <- calculate_cdf_for_condition(df_mang_filtered, "Charlotte", "No", -25)
+
+print(cdf_value_1y - cdf_value_1n)
+
+###no hilighted areas
+
+# ggplot(df_mang_filtered, aes(x = pricediff_calib, y = fips_name, fill=mangrove)) + 
+#   geom_density_ridges(na.rm = TRUE, alpha = 0.2,
+#                       quantile_lines=TRUE,
+#                       quantile_fun=function(x,...)mean(x)
+#                       ) +
+#   scale_fill_discrete(name="Mangrove Effect",
+#                       breaks=c("No", "Yes"),
+#                       labels=c("No (>8km)", "Yes (<2km)")) 
+
+
+# Set the desired color palette
+my_palette <- c("#8A9A5B", "#D3D3D3")  # Replace with your preferred color palette function and number of colors
+
+# ggplot(df_mang_filtered, aes(x = pricediff_calib, y = fips_name, fill = mangrove)) +
+#   geom_density_ridges(
+#     na.rm = TRUE,
+#     quantile_lines = TRUE,
+#     quantiles = 2,
+#     alpha = 0.7
+#   ) +
+#   scale_fill_manual(values = my_palette, name="Mangrove",
+#                     breaks=c("No", "Yes"),
+#                     labels=c("No (>8km)", "Yes (<2km)")) +
+#   theme_ridges()
+
+###overlapping graphs: with both mean and var effect
+###Mangrove effect: Highlight losses above 50
+# gg_mang <- ggplot(df_mang_filtered, aes(x = pricediff_calib, y = fips_name, fill = mangrove)) +
+gg_mang <- ggplot(df_mang_filtered, aes(x = pricediff_calib, y = fips_name, fill = mangrove)) +
+  geom_density_ridges(
+    na.rm = TRUE,
+    quantile_lines = TRUE,
+    quantiles = 2,
+    alpha = 0.8,
+    scale =1.3) +
+  scale_fill_manual(values = my_palette, 
+                    name=" ",
+                    breaks=c("No", "Yes"),
+                    labels=c("No (>16km)", "Yes (<2km)")
+                    ) +
+  theme_ridges()
+
+# Build ggplot and extract data
+d_mang <- ggplot_build(gg_mang)$data[[1]]
+
+# Add geom_ribbon for shaded area
+f1_50_mang<- 
+  gg_mang +
+  geom_ribbon(
+    data = transform(subset(d_mang, x <= -25), fips_name = group),
+    aes(x, ymin = ymin, ymax = ymax, group = group),
+    fill = "red",
+    alpha = 0.3)+
+    # alpha = 0)+
+  xlab("Price Change (%) After Hurrican Ivan - Mangrove Effect") + ylab(" ")+
+  theme(axis.title.x = element_text(hjust = 0.5),  # Center x-axis label
+        axis.title.y = element_text(hjust = 0.5),
+        ) +  # Center y-axis label
+  # Color the county names if on hurricane path
+  # theme(axis.text.y = element_text(color = county_color_map, size = 12)) +
+  #Charlotte
+  annotate("text", x = -190, y = 6.9, label = paste0("ΔpVaR=", round((cdf_value_1y - cdf_value_1n)*100,0),"ppt"),
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Collier
+  annotate("text", x = -190, y = 5.9, label = paste0("ΔpVaR=", round((cdf_value_2y - cdf_value_2n)*100,0),"ppt"),
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Hillsborough
+  annotate("text", x = -190, y = 4.9, label = paste0("ΔpVaR=", round((cdf_value_3y - cdf_value_3n)*100,0),"ppt"),
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Lee
+  annotate("text", x = -190, y = 3.9, label = paste0("ΔpVaR=", round((cdf_value_4y - cdf_value_4n)*100,0),"ppt"),
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Manatee
+  annotate("text", x = -190, y = 2.9, label = paste0("ΔpVaR=", round((cdf_value_5y - cdf_value_5n)*100,0),"ppt"),
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Miami
+  annotate("text", x = -190, y = 1.9, label = paste0("ΔpVaR=", round((cdf_value_6y - cdf_value_6n)*100,0),"ppt"),
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Pinellas
+  annotate("text", x = -190, y = 0.9, label = paste0("ΔpVaR=", round((cdf_value_7y - cdf_value_7n)*100,0),"ppt"),
+           vjust = 1, hjust = 0, size = 4, color ="black")
+
+
+# png("ivan_50_mang_082323.png")
+# png("ivan_50_mang_082323_update.png")
+# png("ivan_50_mang_082323_update_nycclimate.png")
+# ggsave("ivan_50_mang_082323_update_nycclimate.png", plot = f1_50_mang, dpi = 500)
+# png("ivan_50_mang_082323_update_newbenchmark.png")
+png("ivan_25_mang_082323_update_newbenchmark.png")
+
+
+print(f1_50_mang)
+dev.off()
+
+
+######graph 2: Hurricane Sandy Price Dispersion Ridgeplot
+rm(list=ls())
+
+df_mang <- read.csv("../../Data/pricediff_sandy2_b_update_newbenchmark.csv", header=TRUE, sep=",")
+
+
+##filter out values greater than 200
+df_mang_filtered <- df_mang %>% filter(pricediff_calib <= 200 & pricediff_calib >= -100)
+
+df_mang_filtered$fips_name <- factor(df_mang_filtered$fips_name, 
+                                     levels = rev(sort(unique(df_mang_filtered$fips_name))))
+
+
+# Step 2. calculate empirical CDF
+#define a function to caclulate empirical CDF
+  #ecdf is a built-in function in R
+calculate_cdf_for_condition <- function(data, fips_name_condition, mangrove_condition, threshold) {
+  # Filter the data based on the specified conditions
+  filtered_data <- data[data$fips_name == fips_name_condition & data$mangrove == mangrove_condition, ]
+  # Calculate the CDF for the filtered data
+  cdf <- ecdf(filtered_data$pricediff_calib)
+  # Calculate and return the CDF value at the specified threshold
+  return(cdf(threshold))
+}
+
+# Calculate the CDF for the specified conditions
+  #for example, 'df_value_1y' calculate the CDF for the condition of "Pinellas" and "Yes" (mangrove within 2km)
+cdf_value_7y <- calculate_cdf_for_condition(df_mang_filtered, "Pinellas", "Yes", -25)
+print(cdf_value_7y)
+cdf_value_7n <- calculate_cdf_for_condition(df_mang_filtered, "Pinellas", "No", -25)
+print(cdf_value_7n)
+print(cdf_value_7y - cdf_value_7n)
+
+cdf_value_6y <- calculate_cdf_for_condition(df_mang_filtered, "Miami", "Yes", -25)
+print(cdf_value_6y)
+
+cdf_value_6n <- calculate_cdf_for_condition(df_mang_filtered, "Miami", "No", -25)
+print(cdf_value_6n)
+print(cdf_value_6y - cdf_value_6n)
+
+cdf_value_5y <- calculate_cdf_for_condition(df_mang_filtered, "Manatee", "Yes", -25)
+cdf_value_5n <- calculate_cdf_for_condition(df_mang_filtered, "Manatee", "No", -25)
+print(cdf_value_5y - cdf_value_5n)
+
+cdf_value_4y <- calculate_cdf_for_condition(df_mang_filtered, "Lee", "Yes", -25)
+cdf_value_4n <- calculate_cdf_for_condition(df_mang_filtered, "Lee", "No", -25)
+print(cdf_value_4y - cdf_value_4n)
+
+cdf_value_3y <- calculate_cdf_for_condition(df_mang_filtered, "Hillsborough", "Yes", -25)
+cdf_value_3n <- calculate_cdf_for_condition(df_mang_filtered, "Hillsborough", "No", -25)
+print(cdf_value_3y - cdf_value_3n)
+
+cdf_value_2y <- calculate_cdf_for_condition(df_mang_filtered, "Collier", "Yes", -25)
+cdf_value_2n <- calculate_cdf_for_condition(df_mang_filtered, "Collier", "No", -25)
+print(cdf_value_2y - cdf_value_2n)
+
+cdf_value_1y <- calculate_cdf_for_condition(df_mang_filtered, "Charlotte", "Yes", -25)
+print(cdf_value_1y)
+cdf_value_1n <- calculate_cdf_for_condition(df_mang_filtered, "Charlotte", "No", -25)
+print(cdf_value_1n)
+print(cdf_value_1y - cdf_value_1n)
+
+
+# Step 3. plot the ridgeplot with shaded area for VaR effect, automatically incorporating the empirical CDF values
+
+# Set the desired color palette
+my_palette <- c("#8A9A5B", "#D3D3D3")  # Replace with your preferred color palette function and number of colors
+
+###overlapping graphs: with both mean and var effect
+###Mangrove effect: Highlight losses above 50
+gg_mang <- ggplot(df_mang_filtered, aes(x = pricediff_calib, y = fips_name, fill = mangrove)) +
+  geom_density_ridges(
+    na.rm = TRUE,
+    quantile_lines = TRUE,
+    quantiles = 2,
+    alpha = 0.8,
+    scale =1.3) +
+  scale_fill_manual(values = my_palette, name="Mangrove",
+                    breaks=c("No", "Yes"),
+                    labels=c("No (>16km)", "Yes (<2km)")) +
+  theme_ridges()
+
+# Build ggplot and extract data
+d_mang <- ggplot_build(gg_mang)$data[[1]]
+
+# Add geom_ribbon for shaded area
+f1_50_mang<- 
+  gg_mang +
+  geom_ribbon(
+    data = transform(subset(d_mang, x <= -25), fips_name = group),
+    aes(x, ymin = ymin, ymax = ymax, group = group),
+    fill = "red",
+    alpha = 0.3)+
+  xlab("Price Change (%) After Hurricane Sandy - Mangrove Effect") + ylab(" ")+
+  theme(axis.title.x = element_text(hjust = 0.5),  # Center x-axis label
+        axis.title.y = element_text(hjust = 0.5))+  # Center y-axis label
+  #Charlotte
+  annotate("text", x = -190, y = 6.9, label = paste0("ΔpVaR=", round((cdf_value_1y - cdf_value_1n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Collier
+  annotate("text", x = -190, y = 5.9, label = paste0("ΔpVaR=", round((cdf_value_2y - cdf_value_2n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Hillsborough
+  annotate("text", x = -190, y = 4.9, label = paste0("ΔpVaR=", round((cdf_value_3y - cdf_value_3n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Lee
+  annotate("text", x = -190, y = 3.9, label = paste0("ΔpVaR=", round((cdf_value_4y - cdf_value_4n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Manatee
+  annotate("text", x = -190, y = 2.9, label = paste0("ΔpVaR=", round((cdf_value_5y - cdf_value_5n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Miami
+  annotate("text", x = -190, y = 1.9, label = paste0("ΔpVaR=", round((cdf_value_6y - cdf_value_6n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Pinellas
+  annotate("text", x = -190, y = 0.9, label = paste0("ΔpVaR=", round((cdf_value_7y - cdf_value_7n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black")
+
+
+# png("sandy_50_mang_082323.png")
+# png("sandy_50_mang_082323_update.png")
+# png("sandy_50_mang_082323_update_newbenchmark_test.png")
+# png("sandy_50_mang_082323_update_newbenchmark.png")
+png("sandy_25_mang_082323_update_newbenchmark.png")
+
+
+print(f1_50_mang)
+dev.off()
+
+
+######graph 3: Hurricane Irma Price Dispersion Ridgeplot
+
+rm(list=ls())
+
+df_mang <- read.csv("../../Data/pricediff_irma2_update_newbenchmark.csv", header=TRUE, sep=",")
+
+##filter out values greater than 200
+df_mang_filtered <- df_mang %>% filter(pricediff_calib <= 200 & pricediff_calib >= -100)
+
+# Modify county names to add * for selected counties
+df_mang_filtered <- df_mang_filtered %>%
+  mutate(fips_name = ifelse(fips_name %in% c("Charlotte", "Lee","Hillsborough", "Collier"), paste0(fips_name, "*"), fips_name))
+
+# Order the county names in reverse alphabetical order  
+df_mang_filtered$fips_name <- factor(df_mang_filtered$fips_name,
+                                     levels = rev(sort(unique(df_mang_filtered$fips_name))))
+
+
+# Step 2. calculate empirical CDF
+#define a function to caclulate empirical CDF
+  #ecdf is a built-in function in R
+calculate_cdf_for_condition <- function(data, fips_name_condition, mangrove_condition, threshold) {
+  # Filter the data based on the specified conditions
+  filtered_data <- data[data$fips_name == fips_name_condition & data$mangrove == mangrove_condition, ]
+  # Calculate the CDF for the filtered data
+  cdf <- ecdf(filtered_data$pricediff_calib)
+  # Calculate and return the CDF value at the specified threshold
+  return(cdf(threshold))
+}
+
+# Calculate the CDF for the specified conditions
+  #for example, 'df_value_1y' calculate the CDF for the condition of "Pinellas" and "Yes" (mangrove within 2km)
+cdf_value_7y <- calculate_cdf_for_condition(df_mang_filtered, "Pinellas", "Yes", -25)
+print(cdf_value_7y)
+cdf_value_7n <- calculate_cdf_for_condition(df_mang_filtered, "Pinellas", "No", -25)
+print(cdf_value_7y - cdf_value_7n)
+
+
+cdf_value_6y <- calculate_cdf_for_condition(df_mang_filtered, "Miami", "Yes", -25)
+# print(cdf_value_2y)
+
+cdf_value_6n <- calculate_cdf_for_condition(df_mang_filtered, "Miami", "No", -25)
+# print(cdf_value_2n)
+print(cdf_value_6y - cdf_value_6n)
+
+
+cdf_value_5y <- calculate_cdf_for_condition(df_mang_filtered, "Manatee", "Yes", -25)
+cdf_value_5n <- calculate_cdf_for_condition(df_mang_filtered, "Manatee", "No", -25)
+print(cdf_value_5y - cdf_value_5n)
+
+cdf_value_4y <- calculate_cdf_for_condition(df_mang_filtered, "Lee*", "Yes", -25)
+cdf_value_4n <- calculate_cdf_for_condition(df_mang_filtered, "Lee*", "No", -25)
+print(cdf_value_4y - cdf_value_4n)
+
+cdf_value_3y <- calculate_cdf_for_condition(df_mang_filtered, "Hillsborough*", "Yes", -25)
+cdf_value_3n <- calculate_cdf_for_condition(df_mang_filtered, "Hillsborough*", "No", -25)
+print(cdf_value_3y - cdf_value_3n)
+
+cdf_value_2y <- calculate_cdf_for_condition(df_mang_filtered, "Collier*", "Yes", -25)
+cdf_value_2n <- calculate_cdf_for_condition(df_mang_filtered, "Collier*", "No", -25)
+print(cdf_value_2y - cdf_value_2n)
+
+# print(cdf_value_6y)
+# print(cdf_value_6n)
+
+cdf_value_1y <- calculate_cdf_for_condition(df_mang_filtered, "Charlotte*", "Yes", -25)
+cdf_value_1n <- calculate_cdf_for_condition(df_mang_filtered, "Charlotte*", "No", -25)
+print(cdf_value_1y - cdf_value_1n)
+
+# Set the desired color palette
+my_palette <- c("#8A9A5B", "#D3D3D3")  # Replace with your preferred color palette function and number of colors
+
+
+###overlapping graphs: with both mean and var effect
+###Mangrove effect: Highlight losses above 50
+gg_mang <- ggplot(df_mang_filtered, aes(x = pricediff_calib, y = fips_name, fill = mangrove)) +
+  geom_density_ridges(
+    na.rm = TRUE,
+    quantile_lines = TRUE,
+    quantiles = 2,
+    alpha = 0.8,
+    scale =1.3) +
+  scale_fill_manual(values = my_palette, name="Mangrove",
+                    breaks=c("No", "Yes"),
+                    labels=c("No (>16km)", "Yes (<2km)")) +
+  theme_ridges()
+
+# Build ggplot and extract data
+d_mang <- ggplot_build(gg_mang)$data[[1]]
+
+# Add geom_ribbon for shaded area
+f1_50_mang<- 
+  gg_mang +
+  geom_ribbon(
+    data = transform(subset(d_mang, x <= -25), fips_name = group),
+    aes(x, ymin = ymin, ymax = ymax, group = group),
+    fill = "red",
+    alpha = 0.3)+
+  xlab("Price Change (%) After Hurrican Irma - Mangrove Effect") + ylab(" ")+
+  theme(axis.title.x = element_text(hjust = 0.5),  # Center x-axis label
+        axis.title.y = element_text(hjust = 0.5))+  # Center y-axis label
+  # Color the county names if on hurricane path
+  # theme(axis.text.y = element_text(color = county_color_map, size = 12)) +
+  #Charlotte
+  annotate("text", x = -190, y = 6.9, label = paste0("ΔpVaR=", round((cdf_value_1y - cdf_value_1n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Collier
+  annotate("text", x = -190, y = 5.9, label = paste0("ΔpVaR=", round((cdf_value_2y - cdf_value_2n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Hillsborough
+  annotate("text", x = -190, y = 4.9, label = paste0("ΔpVaR=", round((cdf_value_3y - cdf_value_3n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Lee
+  annotate("text", x = -190, y = 3.9, label = paste0("ΔpVaR=", round((cdf_value_4y - cdf_value_4n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Manatee
+  annotate("text", x = -190, y = 2.9, label = paste0("ΔpVaR=", round((cdf_value_5y - cdf_value_5n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  #Miami
+  annotate("text", x = -190, y = 1.9, label = paste0("ΔpVaR=", round((cdf_value_6y - cdf_value_6n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black") +
+  ##Pinellas
+  annotate("text", x = -190, y = 0.9, label = paste0("ΔpVaR=", round((cdf_value_7y - cdf_value_7n)*100,0),"ppt"), 
+           vjust = 1, hjust = 0, size = 4, color ="black")
+
+
+png("irma2_25_mang_082323_update_newbenchmark.png")
+
+
+print(f1_50_mang)
+dev.off()
