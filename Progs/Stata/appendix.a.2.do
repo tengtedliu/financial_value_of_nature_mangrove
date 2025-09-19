@@ -1,17 +1,21 @@
-// Note: Create scatterplot between price per square foot and mangrove distance
-
-use ../../Data/workfile.dta, clear
-// Patht to data: ztrax_FL/FL_data
 
 
-**creste bin scatterplot of price per square foot and mangrove distance, controling for hpi
+// Appendix A.2 Descriptive Results
+
+
+*------------------------------------------------------------*
+****Figure A.3: Figure A.3: Bin scatterplot of Housing Price per Square Foot and Mangroves Distance
+*------------------------------------------------------------*
+use ./Analysis/Data/workfile.dta, clear
+// use ../../Data/workfile.dta, clear
+
+**create bin scatterplot of price per square foot and mangrove distance, controling for hpi
 // ssc install binscatter
 gen salespriceamount_sqt_dollar = salespriceamount/buildingareasqft
 
 capture drop _merge
 merge m:1 year month using "../../Data/hpi.dta"
 
-// global CONTROLS hpi coastline_distance_km elevation_meters age buildingareasqft distance_delta_i familyresid condo 
 global CONTROLS hpi_level 
 
 
@@ -25,31 +29,17 @@ binscatter salespriceamount_sqt_dollar mangrove, controls($CONTROLS) ///
     saving("../../Results/Figures/binscatter_price_mangrove.gph", replace)
 
 * Export to PNG
+
 graph export "../../Results/Figures/binscatter_price_mangrove.png", replace width(2000)
 
 
 
-use ../../Data/workfile.dta, clear
 
 *------------------------------------------------------------*
-* sale tabulation table
+****Table A.1: Transactions and Unique Properties by Distance-to-Mangroves Bin and Hurricane Window
 *------------------------------------------------------------*
 
 global HM      hurbeforemang  huryearmang huraftermang
-// global HMP     huryearmangpath  huraftermangpath
-// global HMOP    huryearmangoffpath  huraftermangoffpath
-//
-// g hurbeforecoast = hurbefore * coastline_distance_km
-// g huraftercoast = hurafter * coastline_distance_km
-// g huryearcoast = huryear * coastline_distance_km
-//
-// g hurbeforemnocoast = hurbefore * mdistance_nocoast
-// g huraftermncoast = hurafter * mdistance_nocoast
-// g huryearmncoast = huryear * mdistance_nocoast
-//
-// global HC      hurbeforecoast  huryearcoast huraftercoast
-// global HMNC  hurbeforemnocoast huraftermncoast huryearmncoast
-
 
 
 eststo: xi: reghdfe salespriceamount_log $HM    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
@@ -75,26 +65,12 @@ label define hurperiod_lbl ///
 label values hurperiod hurperiod_lbl
 
 
-
-// bysort houseid mdistancegroup hurbefore huryear hurafter: gen byte tag = (_n==1 & esamp==1)
-//
-// preserve
-// collapse (count) N_sales = salespriceamount_log ///
-//          (sum)   N_props = tag ///
-//          if esamp==1, by(mdistancegroup hurbefore huryear hurafter)
-
 bysort houseid mdistancegroup hurperiod: gen byte tag = (_n==1 & esamp==1)
 
 preserve
 collapse (count) N_sales = salespriceamount_log ///
          (sum)   N_props = tag ///
          if esamp==1, by(mdistancegroup hurperiod)
-		 
-// collapse (count) N_sales = salespriceamount_log ///
-//          if esamp==1, by(mdistancegroup huryear hurafter)
-
-* install estout if needed
-// ssc install estout	
 	
 export excel using "composition_check.xlsx", firstrow(variables) replace
 

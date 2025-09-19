@@ -1,6 +1,4 @@
-***this do file runs estimations for hurricane level effects on property values***
-// Table 2: Effect of Mangroves on House Sale Prices after Hurricanes
-// Table 3: Effect of Mangroves on Prices after Hurricanes: Accounting for Hurricane Path
+***this do file runs estimations for Tables 2 and 3 in the paper
 
 
 // the commented out section is to generate variables used in the estimation
@@ -72,9 +70,8 @@ compress
 save workfile, replace  
 */
 
-**** July 2025 ******
-use ../../Data/workfile.dta, clear 
-* to add real data file later
+use ./Analysis/Data/workfile.dta, clear 
+// use ../../Data/workfile.dta, clear 
 
 global HM      hurbeforemang  huryearmang huraftermang
 global HMP     huryearmangpath  huraftermangpath
@@ -108,6 +105,32 @@ global HMNCP    huryearmncoastpath huraftermncoastpath
 global HCOP    huryearcoastoffpath huraftercoastoffpath
 global HMNCOP     huryearmncoastoffpath huraftermncoastoffpath
 
+
+
+
+
+*------------------------------------------------------------*
+****Table 2: Effect of Mangroves on House Sale Prices after Hurricanes: Controlling for Property Fixed Effects
+*------------------------------------------------------------*
+
+eststo clear
+
+eststo: xi: reghdfe salespriceamount_log hurbeforemang    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
+eststo: xi: reghdfe salespriceamount_log huryearmang  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
+eststo: xi: reghdfe salespriceamount_log huraftermang   if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
+
+eststo: xi: reghdfe salespriceamount_log $HM    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
+
+eststo: xi: reghdfe salespriceamount_log $HM  c.yr#c.mdistancegroup  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
+
+esttab using main.tex, b(3) se(3) ar2(2) label stats(r2 N, labels("$R^2$")) replace  star(* 0.10 ** 0.05 *** 0.01)
+
+
+*------------------------------------------------------------*
+****Robustness check to Table 2---Figure 6: Mangroves Effects on Housing Sale Prices Following Hurricanes: Measure Orthogonal to Distance to Coast
+*------------------------------------------------------------*
+
+
 eststo clear
 
 eststo: xi: reghdfe salespriceamount_log $HM    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
@@ -123,49 +146,12 @@ eststo: xi: reghdfe salespriceamount_log $HCP $HCOP $HMNCP $HMNCOP  if salescoun
 
 esttab, b(3) se(3) ar2(2) label stats(r2 N, labels("$R^2$" "Observations")) replace  star(* 0.10 ** 0.05 *** 0.01)
 
-************ Main **************. Note mdist is never zero so don't need main effects with path and no mangrove
-*  
-use ./Analysis/Data/workfile.dta, clear 
 
-g yr = year - 1992
 
-global HM      hurbeforemang  huryearmang huraftermang
-global HMP     huryearmangpath  huraftermangpath
-global HMOP    huryearmangoffpath  huraftermangoffpath
-
-g hurbeforecoast = hurbefore * coastline_distance_km
-g huraftercoast = hurafter * coastline_distance_km
-g huryearcoast = huryear * coastline_distance_km
-
-g hurbeforemnocoast = hurbefore * mdistance_nocoast
-g huraftermncoast = hurafter * mdistance_nocoast
-g huryearmncoast = huryear * mdistance_nocoast
-
-global HC      hurbeforecoast  huryearcoast huraftercoast
-global HMNC  hurbeforemnocoast huraftermncoast huryearmncoast
-
-*******Table 1: Effect of Mangroves on House Sale Prices after Hurricanes
+*------------------------------------------------------------*
+****Table 3: Effect of Mangroves on Prices after Hurricanes: Accounting for Hurricane Path
+*------------------------------------------------------------*
 eststo clear
-
-eststo: xi: reghdfe salespriceamount_log c.yr#i.mdistancegroup  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-eststo: xi: reghdfe salespriceamount_log hurbeforemang    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-eststo: xi: reghdfe salespriceamount_log huryearmang  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-eststo: xi: reghdfe salespriceamount_log huraftermang   if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-
-*eststo: xi: reghdfe salespriceamount_log $HM    if salescount <= 22 & floodzone==0   & low_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-eststo: xi: reghdfe salespriceamount_log $HM    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-*eststo: xi: reghdfe salespriceamount_log $HM    if salescount <= 22  & floodzone==0   & high_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-*eststo: xi: reghdfe salespriceamount_log $HM    if salescount <= 22  & floodzone==0   , absorb(houseid   month#year) vce(cluster  year#month) 
-
-eststo: xi: reghdfe salespriceamount_log $HM  c.yr#c.mdistancegroup  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-eststo: xi: reghdfe salespriceamount_log $HM  c.yr#i.mdistancegroup  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1, absorb(houseid   month#year) vce(cluster  year#month) 
-
-esttab using main.tex, b(3) se(3) ar2(2) label stats(r2 N, labels("$R^2$")) replace  star(* 0.10 ** 0.05 *** 0.01)
-
-
-*******Table 2: Effect of Mangroves on Prices after Hurricanes: Accounting for Hurricane Path
-eststo clear
-*eststo: reghdfe salespriceamount_log hurbeforemangpath hurbeforemangoffpath  if salescount <= 22 &  mid_floodrisk ==1 , absorb(houseid  month#year) vce(cluster  year#month)
 eststo: reghdfe salespriceamount_log huryearmangpath  huryearmangoffpath   if salescount <= 22 &  mid_floodrisk ==1 , absorb(houseid  month#year) vce(cluster  year#month)
 eststo: reghdfe salespriceamount_log huraftermangpath  huraftermangoffpath  if salescount <= 22 &  mid_floodrisk ==1 , absorb(houseid  month#year) vce(cluster  year#month)
 eststo: reghdfe salespriceamount_log $HMP  $HMOP   if salescount <= 22 &  mid_floodrisk ==1 , absorb(houseid  month#year) vce(cluster year#month)

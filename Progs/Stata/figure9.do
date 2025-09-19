@@ -27,7 +27,6 @@ cap gen huraftermangwid_inv = hurafter*mang_wid_inv*mdistancegroup
 
 
 ***************estimation
-g yr = year - 1992
 
 global HM      hurbeforemang  huryearmang huraftermang
 global HMP     hurbeforemangpath huryearmangpath  huraftermangpath

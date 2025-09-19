@@ -1,3 +1,8 @@
+*------------------------------------------------------------*
+****Figure 4: Housing Prices Following Hurricane Season: event study
+*------------------------------------------------------------*
+
+
 use ../../Data/workfile.dta, clear 
 
 global HM      hurbeforemang  huryearmang huraftermang
@@ -67,7 +72,7 @@ keep  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1
 // eventdd salespriceamount_log    hpi_level  if salescount <= 22 & floodzone==0    & mid_floodrisk ==1 & mdistancegroup==3 , timevar(hmonths)  method(hdfe, absorb(houseid   ))  leads(12) lags(36)  graph_op(saving(close3, replace) legend(off) graphregion(fcolor(white)) title("4-8 km")) accum ci(rline) level(67) noend  coef_op(msize(small) connect(l)) 
 // estat eventdd
 
-*****update on Sept. 12, 2025: add y and x axis labels
+*****add y and x axis labels
 eventdd salespriceamount_log hpi_level ///
   if salescount <= 22 & floodzone==0 & mid_floodrisk==1 & mdistancegroup==1, ///
   timevar(hmonths) method(hdfe, absorb(houseid)) leads(12) lags(36) ///
@@ -101,17 +106,8 @@ eventdd salespriceamount_log hpi_level ///
   
 
 
-*eventdd salespriceamount_log    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1 & mdistancegroup==4 , timevar(hmonths)  method(hdfe, absorb(houseid   month#year))  leads(6) lags(36)  graph_op(saving(close4, replace)) accum
-*estat eventdd
-
-*eventdd salespriceamount_log    if salescount <= 22 & floodzone==0    & mid_floodrisk ==1 & mdistancegroup==5 , timevar(hmonths)  method(hdfe, absorb(houseid   month#year))  leads(6) lags(36)  graph_op(saving(close5, replace)) accum
-*estat eventdd
-
 set scheme s1color
 grc1leg  close1.gph close2.gph close3.gph  , xcommon ycommon cols(3) scale(0.8) 
 graph export ../../Results/Figures/event3_label.png, replace
 
-
-// grc1leg  close1.gph close2.gph close3.gph  , xcommon ycommon cols(3) scale(0.8) 
-// graph export ../../Results/Figures/event3.png, replace
  

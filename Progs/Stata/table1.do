@@ -1,5 +1,6 @@
-************estimation for Table 1: Effect of Mangroves on House Sale Prices after Hurricanes 
-
+*------------------------------------------------------------*
+****Table 1: Effect of Mangroves on House Sale Prices after Hurricanes 
+*------------------------------------------------------------*
 use ./Analysis/Data/workfile, clear
 
 

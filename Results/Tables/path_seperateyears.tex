@@ -1,0 +1,47 @@
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{tabular}{l*{4}{c}}
+\hline\hline
+                    &\multicolumn{1}{c}{(1)}&\multicolumn{1}{c}{(2)}&\multicolumn{1}{c}{(3)}&\multicolumn{1}{c}{(4)}\\
+                    &\multicolumn{1}{c}{Sale Price (log)}&\multicolumn{1}{c}{Sale Price (log)}&\multicolumn{1}{c}{Sale Price (log)}&\multicolumn{1}{c}{Sale Price (log)}\\
+\hline
+hurricane1afterpath &      -0.011\sym{***}&                     &                     &      -0.046\sym{***}\\
+                    &     (0.003)         &                     &                     &     (0.004)         \\
+[1em]
+hurricane1afteroffpath&      -0.006         &                     &                     &       0.004         \\
+                    &     (0.003)         &                     &                     &     (0.005)         \\
+[1em]
+hurricane2afterpath &                     &      -0.021\sym{***}&                     &      -0.028\sym{***}\\
+                    &                     &     (0.003)         &                     &     (0.004)         \\
+[1em]
+hurricane2afteroffpath&                     &      -0.003         &                     &      -0.010\sym{*}  \\
+                    &                     &     (0.004)         &                     &     (0.005)         \\
+[1em]
+hurricane3afterpath &                     &                     &      -0.013\sym{**} &      -0.022\sym{***}\\
+                    &                     &                     &     (0.004)         &     (0.004)         \\
+[1em]
+hurricane3afteroffpath&                     &                     &      -0.006\sym{*}  &      -0.007\sym{*}  \\
+                    &                     &                     &     (0.003)         &     (0.003)         \\
+[1em]
+hurricane2bmangpath &                     &                     &                     &       0.030\sym{***}\\
+                    &                     &                     &                     &     (0.004)         \\
+[1em]
+hurricane2bmangoffpath&                     &                     &                     &      -0.017\sym{***}\\
+                    &                     &                     &                     &     (0.004)         \\
+[1em]
+hurricane1bmangpath &                     &                     &                     &      -0.019\sym{***}\\
+                    &                     &                     &                     &     (0.005)         \\
+[1em]
+hurricane1bmangoffpath&                     &                     &                     &      -0.006         \\
+                    &                     &                     &                     &     (0.004)         \\
+[1em]
+Constant            &      11.999\sym{***}&      11.999\sym{***}&      11.998\sym{***}&      12.014\sym{***}\\
+                    &     (0.001)         &     (0.001)         &     (0.001)         &     (0.006)         \\
+\hline
+^2$                 &       0.714         &       0.714         &       0.714         &       0.714         \\
+Observations        & 1171460.000         & 1171460.000         & 1171460.000         & 1171460.000         \\
+\hline\hline
+\multicolumn{5}{l}{\footnotesize Standard errors in parentheses}\\
+\multicolumn{5}{l}{\footnotesize \sym{*} \(p<0.05\), \sym{**} \(p<0.01\), \sym{***} \(p<0.001\)}\\
+\end{tabular}
+}

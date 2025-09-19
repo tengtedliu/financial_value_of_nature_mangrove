@@ -1,4 +1,3 @@
-// NOTE: adapted from same file "Pricechange_recalibrate_052223.do" in .Estimation/Distance_recalibrate_062823
   // Creates calibrated price change data, differentiating between path vs non-path properties
   //NOTE: the hurricane path variable includes Ivan/Jeanne, Sandy, and Irma. 
 	// 1. All counties in the sample have at least on the path of Ivan/Jeanne or Irma. 
@@ -254,10 +253,6 @@ salesprice_ivan_b_sq salesprice_ivan_a_sq salesprice_sandy_b_sq salesprice_sandy
 salesprice_irma_b_sq salesprice_irma_a_sq salesprice_irma_b2_sq salesprice_irma_a2_sq  salesprice_irma_b3_sq salesprice_irma_a3_sq ///
 saledelta_mean_zip saledelta_mean_fips ///
 saledelta_mean_zip_sq saledelta_mean_fips_sq hpi fips, by(houseid)
-// bysort houseid: replace salesprice_ivan_b=salesprice_ivan_b[_n-1] if salesprice_ivan_b==. & ivanevent == 1
-// bysort houseid: replace salesprice_ivan_a=salesprice_ivan_a[_n+1] if salesprice_ivan_a==. & ivanevent == 0
-// save ../FL_data/salesprice_b_a.dta, replace
-// save ./Analysis/Data/salesprice_b_a.dta, replace
 
 
 // price differences without mangrove effect
@@ -339,7 +334,6 @@ restore
 
 
 // Step 3: 
-*use /Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/salesprice_b_a_plot.dta, clear
 use ./Data/salesprice_b_a_plot.dta, clear
 destring fips, replace 
 ***step 1: 
@@ -347,23 +341,10 @@ destring fips, replace
 	**1. average increase in prices due to mangrove effect
 	**2. Divide this average increase by the average price of property sales
 	
-	// Use medium-risk area figures in percentage terms
-	// Source: tab "benchmark_VaR" https://docs.google.com/spreadsheets/d/1Dgo2fl6EPmOkbYvh88HKo-8EdSprJ_s-zEJZL1_5_eQ/edit?gid=1516974976#gid=1516974976
 
 
-	// - specify a particular hurricane
-	// gen mangrove_effect_ivan = 0.14
-	// gen mangrove_effect_ivan = 0.0349
-	//Using IVAN effect of mid-risk areas and between baseline and >4km 
-	// gen mangrove_effect_sandy = 0.12
-	// gen mangrove_effect_sandy = 0.0349
-	//Using SANDY effect of mid-risk areas and between baseline and >4km 
-	// gen mangrove_effect_irma = 0.17
-	// gen mangrove_effect_irma = 0.0349
-	//Using IRMA effect of mid-risk areas and between baseline and >4km 
 
 // specify main effect of hurricanes in general for path and off path counties 
-// Source: https://docs.google.com/spreadsheets/d/1Dgo2fl6EPmOkbYvh88HKo-8EdSprJ_s-zEJZL1_5_eQ/edit?gid=1919187245#gid=1919187245
 gen mangrove_effect_path = 0.1  /* 0.025 * 4 */
 gen mangrove_effect_offpath = 0.044   /* 0.011 * 4 */
 
@@ -412,58 +393,13 @@ replace pricediff_irma2_mang = 100 * (salesprice_irma_a2 * (1 + mangrove_effect_
 if !inlist(fips, 12057, 12021, 12015, 12071)
 
 
-// *1
-// gen pricediff_ivan_mang = (100*(salesprice_ivan_a - salesprice_ivan_b)/salesprice_ivan_b)-hpi
-
-// *2
-// gen pricediff_sandy_mang = (100*(salesprice_sandy_a - salesprice_sandy_b )/salesprice_sandy_b)-hpi
-// gen pricediff_sandy2_mang = (100*(salesprice_sandy_a2 - salesprice_sandy_b2 )/salesprice_sandy_b2)-hpi
-
-// *3
-// gen pricediff_irma_mang = (100*(salesprice_irma_a - salesprice_irma_b )/salesprice_irma_b)-hpi
-// gen pricediff_irma2_mang = (100*(salesprice_irma_a2 - salesprice_irma_b2 )/salesprice_irma_b2)-hpi
-// gen pricediff_irma3_mang = (100*(salesprice_irma_a3 - salesprice_irma_b3 )/salesprice_irma_b3)-hpi
-
-// global pricedifflist pricediff_ivan_mang pricediff_sandy_mang pricediff_sandy2_mang pricediff_irma_mang pricediff_irma2_mang pricediff_irma3_mang
-// global pricedifflist_sandy pricediff_sandy_mang pricediff_sandy2_mang 
-// global pricedifflist_irma pricediff_irma_mang pricediff_irma2_mang pricediff_irma3_mang
-
-// foreach x in $pricedifflist {
-// egen `x'_sd = sd(`x') 
-// egen `x'_mean = mean(`x')
-// } 
-
 ***step 3: Recalculate the house price changes to incorporate mangrove var effect
-	// Calculations from tab "high/mid risk-graph" in "FloridaZillow main results for PNAS/Nature"
-
-	//Using IVAN effect between baseline and >4km 
-	// gen mangrove_var_ivan = 0.13
-	// gen mangrove_var_ivan = 0
-    //Using SANDY effect between baseline and >4km 
-	// gen mangrove_var_sandy = 0
-	// gen mangrove_var_sandy = 1.7
-	//Using IRMA effect between baseline and >4km 
-	// gen mangrove_var_irma = 0.25
-	// gen mangrove_var_irma = 0
 
 // specify main effect of hurricanes in general for path and off path counties 
 	gen mangrove_var_path = 0.032   /* this is coef 0.008 * 4 */  /* do we need to multiply by mean here? */
 	gen mangrove_var_offpath = 0.028 /* 0.007 * 4 */
 
-// ...mang_scale refers to the scaled price change taking into account VaR effect; adjust the deviation from the mean
-// normally the scaling factor needs to be calcuated as scaling_factor = new_std / current_std, but the mangrove_var variables here already take into the account the differences in standard deviation
 
-	// start of older calculation using pricediff_ivan_mang_mean
-	// gen pricediff_ivan_mang_scale = pricediff_ivan_mang_mean + ((pricediff_ivan_mang - pricediff_ivan_mang_mean)*(1-mangrove_var_ivan))
-
-	// foreach x in $pricedifflist_sandy {
-	// gen `x'_scale = `x'_mean + ((`x' - `x'_mean)*(1 - mangrove_var_sandy))
-	// } 
-
-	// foreach x in $pricedifflist_irma {
-	// gen `x'_scale = `x'_mean + ((`x' - `x'_mean)*(1 - mangrove_var_irma))
-	// } 
-	// end of older calculation using pricediff_ivan_mang_mean
 gen pricediff_ivan_mang_scale = (pricediff_ivan_mang)*(1-mangrove_var_path) if inlist(fips, 12057, 12021, 12011, 12086)
 replace pricediff_ivan_mang_scale = (pricediff_ivan_mang)*(1-mangrove_var_offpath) if !inlist(fips, 12057, 12021, 12011, 12086)
 
@@ -472,55 +408,20 @@ gen pricediff_sandy2_mang_scale = (pricediff_sandy2_mang)*(1-mangrove_var_offpat
 gen pricediff_irma2_mang_scale = (pricediff_irma2_mang)*(1-mangrove_var_path) if inlist(fips, 12057, 12021, 12015, 12071)
 replace pricediff_irma2_mang_scale = (pricediff_irma2_mang)*(1-mangrove_var_offpath) if !inlist(fips, 12057, 12021, 12015, 12071)
 
-// tostring fips, replace 
-// cap gen fips_name = fips
- 
-// replace fips_name = "Charlotte" if fips =="12015"
-// replace fips_name = "Collier" if fips =="12021"
-// replace fips_name = "Lee" if fips =="12071"
-// replace fips_name = "Hillsborough" if fips =="12057"
-// replace fips_name = "Manatee" if fips =="12081"
-// replace fips_name = "Miami" if fips =="12086"
-// replace fips_name = "Pinellas" if fips =="12103"
 
-
-// twoway (histogram pricediff_sandy2_mang if pricediff_sandy2_noajust <200, color(green) graphregion(color(white))) ///
-//        (histogram pricediff_sandy2_noajust if pricediff_sandy2_noajust <200,  fcolor(none) lcolor(black) graphregion(color(white))), ///
-// 	   legend(order(1 "Mangrove" 2 "No Mangrove" )) ///
-// 	   xtitle("Price Change (%) After Hurrican Sandy - Mangrove Effect")
-
-// twoway (histogram pricediff_sandy2_mang_scale if pricediff_sandy2_mang_scale <200, color(green) graphregion(color(white))) ///
-//        (histogram pricediff_sandy2_noajust if pricediff_sandy2_noajust <200,  fcolor(none) lcolor(black) graphregion(color(white))), ///
-// 	   legend(order(1 "Mangrove" 2 "No Mangrove" )) ///
-// 	   xtitle("Price Change (%) After Hurrican Sandy - Mangrove Effect")
 
 
 
 ************export to csv for graphing in R
 // NOTE: re-run the previous code to output each of the following csv
 
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/salesprice_b_a_mang.csv", replace
 
-***
-// keep houseid fips fips_name pricediff_sandy2_noajust pricediff_sandy2_mang 
-// drop if pricediff_sandy2_noajust ==.
-// ren pricediff_sandy2_noajust pricediff_calib
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_sandy2.csv", replace
-*NOTE: salesprice_b_a_sandy2_reshape.csv is created manually using Excel; should find a better way to do it in Stata
-// keep houseid fips fips_name pricediff_sandy_noajust pricediff_sandy_mang_scale 
-// drop if pricediff_sandy_noajust ==.
-// ren pricediff_sandy_noajust pricediff_calib
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_sandy.csv", replace
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_sandy_update.csv", replace
 
 preserve
 keep houseid fips fips_name pricediff_sandy2_noajust pricediff_sandy2_mang_scale 
 drop if pricediff_sandy2_noajust ==.
 ren pricediff_sandy2_noajust pricediff_calib
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_sandy2_b.csv", replace
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_sandy2_b_update.csv", replace
-// export delimited using /Users/gbhale/Dropbox/ztrax_FL/FL_data/pricediff_sandy2_b_update_newbenchmark.csv, replace
-* "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_sandy2_b_update_newbenchmark.csv", replace
+
 export delimited using ./Data/pricediff_sandy2_b_update_newbenchmark.csv, replace
 restore
 
@@ -530,39 +431,23 @@ keep houseid fips fips_name pricediff_ivan_noajust pricediff_ivan_mang_scale
 drop if pricediff_ivan_noajust ==.
 ren pricediff_ivan_noajust pricediff_calib
 drop if fips_name =="12037.25"
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_ivan.csv", replace
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_ivan_update.csv", replace
-*export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_ivan_update_newbenchmark.csv", 
-// export delimited using /Users/gbhale/Dropbox/ztrax_FL/FL_data/pricediff_ivan_update_newbenchmark.csv,  replace
+
 export delimited using ./Data/pricediff_ivan_update_newbenchmark.csv, replace
 restore
 
 
-// keep houseid fips fips_name pricediff_irma_noajust pricediff_irma_mang_scale 
-// drop if pricediff_irma_noajust ==.
-// ren pricediff_irma_noajust pricediff_calib
-// drop if fips_name =="12037.25"
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_irma.csv", replace
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_irma_update.csv", replace
+
 
 preserve
 keep houseid fips fips_name pricediff_irma2_noajust pricediff_irma2_mang_scale 
 drop if pricediff_irma2_noajust ==.
 ren pricediff_irma2_noajust pricediff_calib
 drop if fips_name =="12037.25"
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_irma2.csv", replace
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_irma2_update.csv", replace
-*export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_irma2_update_newbenchmark.csv", replace
-// export delimited using /Users/gbhale/Dropbox/ztrax_FL/FL_data/pricediff_irma2_update_newbenchmark.csv, replace 
+
 export delimited using ./Data/pricediff_irma2_update_newbenchmark.csv, replace
 restore
 
-// keep houseid fips fips_name pricediff_irma3_noajust pricediff_irma3_mang_scale 
-// drop if pricediff_irma3_noajust ==.
-// ren pricediff_irma3_noajust pricediff_calib
-// drop if fips_name =="12037.25"
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_irma3.csv", replace
-// export delimited using "/Users/ted/Dropbox/PhD/Research/coastal/Zillow/ztrax_FL/FL_data/pricediff_irma3_update.csv", replace
+
 
 
 ************FINAL STEPS: 

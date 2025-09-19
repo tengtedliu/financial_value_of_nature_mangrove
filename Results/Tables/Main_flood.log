@@ -1,0 +1,603 @@
+-------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /raid/users/tliu99/coastal_regs_aug2023/Main_flood.log
+  log type:  text
+ opened on:   3 Aug 2025, 21:52:11
+
+. 
+. ***create flood map variables 
+.         *low to high risk
+. cap gen high_floodrisk = (fld_zone=="AE" | fld_zone=="VE")
+
+. cap gen mid_floodrisk = (fld_zone !="AE" & zone_subty!="AREA OF MINIMAL FLOOD
+>  HAZARD" & fld_zone !="VE")
+
+. cap gen low_floodrisk = (zone_subty=="AREA OF MINIMAL FLOOD HAZARD")
+
+. 
+. //flood risk and hurricane
+.         *high risk
+. gen ivan0_high_floodrisk=ivan0after*high_floodrisk
+(9,291 missing values generated)
+
+. gen ivan1_high_floodrisk=ivan1after*high_floodrisk
+(9,291 missing values generated)
+
+. gen ivan2_high_floodrisk=ivan2after*high_floodrisk
+(9,291 missing values generated)
+
+. 
+. gen sandy0_high_floodrisk=sandy0after*high_floodrisk
+(9,291 missing values generated)
+
+. gen sandy1_high_floodrisk=sandy1after*high_floodrisk
+(9,291 missing values generated)
+
+. gen sandy2_high_floodrisk=sandy2after*high_floodrisk
+(9,291 missing values generated)
+
+. 
+. gen irma0_high_floodrisk=irma0after*high_floodrisk
+(9,291 missing values generated)
+
+. gen irma1_high_floodrisk=irma1after*high_floodrisk
+(9,291 missing values generated)
+
+. gen irma2_high_floodrisk=irma2after*high_floodrisk
+(9,291 missing values generated)
+
+. 
+. 
+. 
+.         *medium risk
+. gen ivan0_mid_floodrisk=ivan0after*mid_floodrisk
+(9,291 missing values generated)
+
+. gen ivan1_mid_floodrisk=ivan1after*mid_floodrisk
+(9,291 missing values generated)
+
+. gen ivan2_mid_floodrisk=ivan2after*mid_floodrisk
+(9,291 missing values generated)
+
+. 
+. gen sandy0_mid_floodrisk=sandy0after*mid_floodrisk
+(9,291 missing values generated)
+
+. gen sandy1_mid_floodrisk=sandy1after*mid_floodrisk
+(9,291 missing values generated)
+
+. gen sandy2_mid_floodrisk=sandy2after*mid_floodrisk
+(9,291 missing values generated)
+
+. 
+. gen irma0_mid_floodrisk=irma0after*mid_floodrisk
+(9,291 missing values generated)
+
+. gen irma1_mid_floodrisk=irma1after*mid_floodrisk
+(9,291 missing values generated)
+
+. gen irma2_mid_floodrisk=irma2after*mid_floodrisk
+(9,291 missing values generated)
+
+. 
+.         
+.         *low risk
+. gen ivan0_low_floodrisk=ivan0after*low_floodrisk
+(9,291 missing values generated)
+
+. gen ivan1_low_floodrisk=ivan1after*low_floodrisk
+(9,291 missing values generated)
+
+. gen ivan2_low_floodrisk=ivan2after*low_floodrisk
+(9,291 missing values generated)
+
+. 
+. gen sandy0_low_floodrisk=sandy0after*low_floodrisk
+(9,291 missing values generated)
+
+. gen sandy1_low_floodrisk=sandy1after*low_floodrisk
+(9,291 missing values generated)
+
+. gen sandy2_low_floodrisk=sandy2after*low_floodrisk
+(9,291 missing values generated)
+
+. 
+. gen irma0_low_floodrisk=irma0after*low_floodrisk
+(9,291 missing values generated)
+
+. gen irma1_low_floodrisk=irma1after*low_floodrisk
+(9,291 missing values generated)
+
+. gen irma2_low_floodrisk=irma2after*low_floodrisk
+(9,291 missing values generated)
+
+. 
+. 
+. //flood risk and mangrove
+.         *high risk
+. gen high_floodrisk_mang = high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+.         *medium risk
+. gen mid_floodrisk_mang = mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+.         *low risk
+. gen low_floodrisk_mang = low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. 
+. //triple interaction of hurricane, mangrove, and flood risk
+.         *high risk
+. gen ivan0_high_floodrisk_mang=ivan0after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen ivan1_high_floodrisk_mang=ivan1after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen ivan2_high_floodrisk_mang=ivan2after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. gen sandy0_high_floodrisk_mang=sandy0after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen sandy1_high_floodrisk_mang=sandy1after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen sandy2_high_floodrisk_mang=sandy2after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. gen irma0_high_floodrisk_mang=irma0after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen irma1_high_floodrisk_mang=irma1after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen irma2_high_floodrisk_mang=irma2after*high_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. 
+.         *medium risk
+. gen ivan0_mid_floodrisk_mang=ivan0after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen ivan1_mid_floodrisk_mang=ivan1after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen ivan2_mid_floodrisk_mang=ivan2after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. gen sandy0_mid_floodrisk_mang=sandy0after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen sandy1_mid_floodrisk_mang=sandy1after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen sandy2_mid_floodrisk_mang=sandy2after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. gen irma0_mid_floodrisk_mang=irma0after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen irma1_mid_floodrisk_mang=irma1after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen irma2_mid_floodrisk_mang=irma2after*mid_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+.         
+.         *low risk
+. gen ivan0_low_floodrisk_mang=ivan0after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen ivan1_low_floodrisk_mang=ivan1after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen ivan2_low_floodrisk_mang=ivan2after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. gen sandy0_low_floodrisk_mang=sandy0after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen sandy1_low_floodrisk_mang=sandy1after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen sandy2_low_floodrisk_mang=sandy2after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. gen irma0_low_floodrisk_mang=irma0after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen irma1_low_floodrisk_mang=irma1after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. gen irma2_low_floodrisk_mang=irma2after*low_floodrisk*mdistancegroup
+(9,291 missing values generated)
+
+. 
+. 
+. 
+. cap gen saleweight = 1/salescount
+
+. 
+. // baseline specification: property FE, time FE, WITH main effect of mangrove
+>  AND main effect of hurricanes . 
+. 
+. 
+. // ***Table A.3: Effect of Mangroves on Prices by Flood Risk
+. //      qui reghdfe salespriceamount_log mdistancegroup ///
+. //      ivan0_high_floodrisk_mang  ivan1_high_floodrisk_mang ivan2_high_flood
+> risk_mang ///
+. //      ivan0_mid_floodrisk_mang ivan1_mid_floodrisk_mang ivan2_mid_floodrisk
+> _mang ///
+. //      sandy0_high_floodrisk_mang  sandy1_high_floodrisk_mang sandy2_high_fl
+> oodrisk_mang ///
+. //      sandy0_mid_floodrisk_mang sandy1_mid_floodrisk_mang sandy2_mid_floodr
+> isk_mang ///
+. //      irma0_high_floodrisk_mang  irma1_high_floodrisk_mang irma2_high_flood
+> risk_mang ///
+. //      irma0_mid_floodrisk_mang irma1_mid_floodrisk_mang irma2_mid_floodrisk
+> _mang ///
+. //      ivan0_high_floodrisk ivan1_high_floodrisk ivan2_high_floodrisk ///
+. //      ivan0_mid_floodrisk ivan1_mid_floodrisk ivan2_mid_floodrisk ///
+. //      sandy0_high_floodrisk sandy1_high_floodrisk sandy2_high_floodrisk ///
+. //      sandy0_mid_floodrisk sandy1_mid_floodrisk sandy2_mid_floodrisk ///
+. //      irma0_high_floodrisk irma1_high_floodrisk irma2_high_floodrisk ///
+. //      irma0_mid_floodrisk irma1_mid_floodrisk irma2_mid_floodrisk ///
+. //      high_floodrisk mid_floodrisk ///
+. //      high_floodrisk_mang mid_floodrisk_mang ///
+. //      ivan0after ivan1after ivan2after ///
+. //      sandy0after sandy1after sandy2after ///
+. //      irma0after irma1after irma2after ///
+. //      ivan0mang ivan1mang  ivan2mang ///
+. //      sandy0mang sandy1mang  sandy2mang ///
+. //      irma0mang irma1mang  irma2mang ///
+. //      i.month##i.year [aweight=saleweight] if salescount <= 22, absorb(hous
+> eid)
+. 
+. //      est store model1
+. 
+. // *export tables
+. // esttab model1 using "table1_a_robust1_1.csv", b(2) se(2) ar2(2) label stat
+> s(fe tfe r2 N, labels("Property FE" "Year-Month FE" "R-squared")) ///
+. // drop(*.month *.year *.month#*.year) replace
+. 
+. // esttab model1 using "table1_a_robust1_1.tex", b(2) se(2) ar2(2) label stat
+> s(fe tfe r2 N, labels("Property FE" "Year-Month FE" "R-squared")) ///
+. // drop(*.month *.year *.month#*.year) replace
+. 
+. 
+. // // baseline specification: property FE, time FE, NO main effect of mangrov
+> e OR main effect of hurricanes . 
+. // ***Table A.4: Effect of Mangroves by Flood Risk, Hurricane, and Year
+. //      qui reghdfe salespriceamount_log ///
+. //      ivan0_high_floodrisk_mang  ivan1_high_floodrisk_mang ivan2_high_flood
+> risk_mang ///
+. //      ivan0_mid_floodrisk_mang ivan1_mid_floodrisk_mang ivan2_mid_floodrisk
+> _mang ///
+. //      sandy0_high_floodrisk_mang  sandy1_high_floodrisk_mang sandy2_high_fl
+> oodrisk_mang ///
+. //      sandy0_mid_floodrisk_mang sandy1_mid_floodrisk_mang sandy2_mid_floodr
+> isk_mang ///
+. //      irma0_high_floodrisk_mang  irma1_high_floodrisk_mang irma2_high_flood
+> risk_mang ///
+. //      irma0_mid_floodrisk_mang irma1_mid_floodrisk_mang irma2_mid_floodrisk
+> _mang ///
+. //      ivan0_high_floodrisk ivan1_high_floodrisk ivan2_high_floodrisk ///
+. //      ivan0_mid_floodrisk ivan1_mid_floodrisk ivan2_mid_floodrisk ///
+. //      sandy0_high_floodrisk sandy1_high_floodrisk sandy2_high_floodrisk ///
+. //      sandy0_mid_floodrisk sandy1_mid_floodrisk sandy2_mid_floodrisk ///
+. //      irma0_high_floodrisk irma1_high_floodrisk irma2_high_floodrisk ///
+. //      irma0_mid_floodrisk irma1_mid_floodrisk irma2_mid_floodrisk ///
+. //      high_floodrisk mid_floodrisk ///
+. //      high_floodrisk_mang mid_floodrisk_mang ///
+. //      ivan0mang ivan1mang  ivan2mang ///
+. //      sandy0mang sandy1mang  sandy2mang ///
+. //      irma0mang irma1mang  irma2mang ///
+. //      i.month##i.year [aweight=saleweight] if salescount <= 22, absorb(hous
+> eid)    
+.          
+. //      est store model3
+. 
+. // *export tables
+. // esttab model3 using "table1_a_robust1_3.csv", b(2) se(2) ar2(2) label stat
+> s(fe tfe r2 N, labels("Property FE" "Year-Month FE" "R-squared")) ///
+. // drop(*.month *.year *.month#*.year) replace
+. 
+. // esttab model3 using "table1_a_robust1_3.tex", b(2) se(2) ar2(2) label stat
+> s(fe tfe r2 N, labels("Property FE" "Year-Month FE" "R-squared")) ///      
+. // drop(*.month *.year *.month#*.year) replace
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. ***Linear combination from Table A.3: Effect of Mangroves on Prices by Flood 
+> Risk
+. 
+.         qui reghdfe salespriceamount_log mdistancegroup ///
+>         ivan0_high_floodrisk_mang  ivan1_high_floodrisk_mang ivan2_high_flood
+> risk_mang ///
+>         ivan0_mid_floodrisk_mang ivan1_mid_floodrisk_mang ivan2_mid_floodrisk
+> _mang ///
+>         sandy0_high_floodrisk_mang  sandy1_high_floodrisk_mang sandy2_high_fl
+> oodrisk_mang ///
+>         sandy0_mid_floodrisk_mang sandy1_mid_floodrisk_mang sandy2_mid_floodr
+> isk_mang ///
+>         irma0_high_floodrisk_mang  irma1_high_floodrisk_mang irma2_high_flood
+> risk_mang ///
+>         irma0_mid_floodrisk_mang irma1_mid_floodrisk_mang irma2_mid_floodrisk
+> _mang ///
+>         ivan0_high_floodrisk ivan1_high_floodrisk ivan2_high_floodrisk ///
+>         ivan0_mid_floodrisk ivan1_mid_floodrisk ivan2_mid_floodrisk ///
+>         sandy0_high_floodrisk sandy1_high_floodrisk sandy2_high_floodrisk ///
+>         sandy0_mid_floodrisk sandy1_mid_floodrisk sandy2_mid_floodrisk ///
+>         irma0_high_floodrisk irma1_high_floodrisk irma2_high_floodrisk ///
+>         irma0_mid_floodrisk irma1_mid_floodrisk irma2_mid_floodrisk ///
+>         high_floodrisk mid_floodrisk ///
+>         high_floodrisk_mang mid_floodrisk_mang ///
+>         ivan0after ivan1after ivan2after ///
+>         sandy0after sandy1after sandy2after ///
+>         irma0after irma1after irma2after ///
+>         ivan0mang ivan1mang  ivan2mang ///
+>         sandy0mang sandy1mang  sandy2mang ///
+>         irma0mang irma1mang  irma2mang ///
+>         i.month##i.year [aweight=saleweight] if salescount <= 22, absorb(hous
+> eid)
+
+. 
+.         ***High Flood Risk
+.         **irma
+.          lincom irma1_high_floodrisk_mang + irma1_high_floodrisk + high_flood
+> risk_mang + high_floodrisk + mdistancegroup + irma1after + irma1mang
+
+ ( 1)  mdistancegroup + irma1_high_floodrisk_mang + irma1_high_floodrisk +
+       high_floodrisk + high_floodrisk_mang + irma1after + irma1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.4862302    .180028    -2.70   0.007    -.8390787   -.1333816
+------------------------------------------------------------------------------
+
+.          lincom irma1_high_floodrisk_mang*2 + irma1_high_floodrisk + high_flo
+> odrisk_mang*2 + high_floodrisk + mdistancegroup*2 + irma1after + irma1mang*2
+
+ ( 1)  2*mdistancegroup + 2*irma1_high_floodrisk_mang + irma1_high_floodrisk +
+       high_floodrisk + 2*high_floodrisk_mang + irma1after + 2*irma1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.4899461   .1690718    -2.90   0.004    -.8213209   -.1585713
+------------------------------------------------------------------------------
+
+.          lincom irma1_high_floodrisk_mang*4 + irma1_high_floodrisk + high_flo
+> odrisk_mang*4 + high_floodrisk + mdistancegroup*4 + irma1after + irma1mang*4
+
+ ( 1)  4*mdistancegroup + 4*irma1_high_floodrisk_mang + irma1_high_floodrisk +
+       high_floodrisk + 4*high_floodrisk_mang + irma1after + 4*irma1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.4973779   .2212793    -2.25   0.025    -.9310775   -.0636782
+------------------------------------------------------------------------------
+
+. 
+. 
+.         **Ivan
+.          lincom ivan1_high_floodrisk_mang + ivan1_high_floodrisk + high_flood
+> risk_mang + high_floodrisk + mdistancegroup + ivan1after + ivan1mang
+
+ ( 1)  mdistancegroup + ivan1_high_floodrisk_mang + ivan1_high_floodrisk +
+       high_floodrisk + high_floodrisk_mang + ivan1after + ivan1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.3835247   .1744097    -2.20   0.028    -.7253616   -.0416878
+------------------------------------------------------------------------------
+
+.          lincom ivan1_high_floodrisk_mang*2 + ivan1_high_floodrisk + high_flo
+> odrisk_mang*2 + high_floodrisk + mdistancegroup*2 + ivan1after + ivan1mang*2
+
+ ( 1)  2*mdistancegroup + 2*ivan1_high_floodrisk_mang + ivan1_high_floodrisk +
+       high_floodrisk + 2*high_floodrisk_mang + ivan1after + 2*ivan1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   -.381013   .1631839    -2.33   0.020    -.7008477   -.0611784
+------------------------------------------------------------------------------
+
+.          lincom ivan1_high_floodrisk_mang*4 + ivan1_high_floodrisk + high_flo
+> odrisk_mang*4 + high_floodrisk + mdistancegroup*4 + ivan1after + ivan1mang*4
+
+ ( 1)  4*mdistancegroup + 4*ivan1_high_floodrisk_mang + ivan1_high_floodrisk +
+       high_floodrisk + 4*high_floodrisk_mang + ivan1after + 4*ivan1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.3759897   .2164436    -1.74   0.082    -.8002115     .048232
+------------------------------------------------------------------------------
+
+. 
+. 
+.         **Sandy
+.          lincom sandy1_high_floodrisk_mang + sandy1_high_floodrisk + high_flo
+> odrisk_mang + high_floodrisk + mdistancegroup + sandy1after + sandy1mang
+
+ ( 1)  mdistancegroup + sandy1_high_floodrisk_mang + sandy1_high_floodrisk +
+       high_floodrisk + high_floodrisk_mang + sandy1after + sandy1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.4216141   .1745176    -2.42   0.016    -.7636625   -.0795658
+------------------------------------------------------------------------------
+
+.          lincom sandy1_high_floodrisk_mang*2 + sandy1_high_floodrisk + high_f
+> loodrisk_mang*2 + high_floodrisk + mdistancegroup*2 + sandy1after + sandy1man
+> g*2
+
+ ( 1)  2*mdistancegroup + 2*sandy1_high_floodrisk_mang + sandy1_high_floodrisk
+       + high_floodrisk + 2*high_floodrisk_mang + sandy1after + 2*sandy1mang =
+       0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.4284454   .1633066    -2.62   0.009    -.7485207   -.1083701
+------------------------------------------------------------------------------
+
+.          lincom sandy1_high_floodrisk_mang*4 + sandy1_high_floodrisk + high_f
+> loodrisk_mang*4 + high_floodrisk + mdistancegroup*4 + sandy1after + sandy1man
+> g*4
+
+ ( 1)  4*mdistancegroup + 4*sandy1_high_floodrisk_mang + sandy1_high_floodrisk
+       + high_floodrisk + 4*high_floodrisk_mang + sandy1after + 4*sandy1mang =
+       0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   -.442108   .2165855    -2.04   0.041     -.866608    -.017608
+------------------------------------------------------------------------------
+
+. 
+.         ***Medium Flood Risk
+.         **irma
+.         lincom irma1_mid_floodrisk_mang + irma1_mid_floodrisk + mid_floodrisk
+> _mang + mid_floodrisk + mdistancegroup + irma1after + irma1mang
+
+ ( 1)  mdistancegroup + irma1_mid_floodrisk_mang + irma1_mid_floodrisk +
+       mid_floodrisk + mid_floodrisk_mang + irma1after + irma1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |   -.205742   .1556697    -1.32   0.186    -.5108491    .0993652
+------------------------------------------------------------------------------
+
+.         lincom irma1_mid_floodrisk_mang*2 + irma1_mid_floodrisk + mid_floodri
+> sk_mang*2 + mid_floodrisk + mdistancegroup*2 + irma1after + irma1mang*2
+
+ ( 1)  2*mdistancegroup + 2*irma1_mid_floodrisk_mang + irma1_mid_floodrisk +
+       mid_floodrisk + 2*mid_floodrisk_mang + irma1after + 2*irma1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.3942846   .1568246    -2.51   0.012    -.7016554   -.0869138
+------------------------------------------------------------------------------
+
+.         lincom irma1_mid_floodrisk_mang*4 + irma1_mid_floodrisk + mid_floodri
+> sk_mang*4 + mid_floodrisk + mdistancegroup*4 + irma1after + irma1mang*4
+
+ ( 1)  4*mdistancegroup + 4*irma1_mid_floodrisk_mang + irma1_mid_floodrisk +
+       mid_floodrisk + 4*mid_floodrisk_mang + irma1after + 4*irma1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.7713697   .1960957    -3.93   0.000     -1.15571   -.3870291
+------------------------------------------------------------------------------
+
+. 
+. 
+.         **Ivan
+.         lincom ivan1_mid_floodrisk_mang + ivan1_mid_floodrisk + mid_floodrisk
+> _mang + mid_floodrisk + mdistancegroup + ivan1after + ivan1mang
+
+ ( 1)  mdistancegroup + ivan1_mid_floodrisk_mang + ivan1_mid_floodrisk +
+       mid_floodrisk + mid_floodrisk_mang + ivan1after + ivan1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.3184238   .1490218    -2.14   0.033    -.6105012   -.0263463
+------------------------------------------------------------------------------
+
+.         lincom ivan1_mid_floodrisk_mang*2 + ivan1_mid_floodrisk + mid_floodri
+> sk_mang*2 + mid_floodrisk + mdistancegroup*2 + ivan1after + ivan1mang*2
+
+ ( 1)  2*mdistancegroup + 2*ivan1_mid_floodrisk_mang + ivan1_mid_floodrisk +
+       mid_floodrisk + 2*mid_floodrisk_mang + ivan1after + 2*ivan1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.4658925   .1504183    -3.10   0.002     -.760707    -.171078
+------------------------------------------------------------------------------
+
+.         lincom ivan1_mid_floodrisk_mang*4 + ivan1_mid_floodrisk + mid_floodri
+> sk_mang*4 + mid_floodrisk + mdistancegroup*4 + ivan1after + ivan1mang*4
+
+ ( 1)  4*mdistancegroup + 4*ivan1_mid_floodrisk_mang + ivan1_mid_floodrisk +
+       mid_floodrisk + 4*mid_floodrisk_mang + ivan1after + 4*ivan1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.7608299   .1911474    -3.98   0.000    -1.135472   -.3861878
+------------------------------------------------------------------------------
+
+. 
+. 
+.         **Sandy
+.         lincom sandy1_mid_floodrisk_mang + sandy1_mid_floodrisk + mid_floodri
+> sk_mang + mid_floodrisk + mdistancegroup + sandy1after + sandy1mang
+
+ ( 1)  mdistancegroup + sandy1_mid_floodrisk_mang + sandy1_mid_floodrisk +
+       mid_floodrisk + mid_floodrisk_mang + sandy1after + sandy1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.3661489   .1492001    -2.45   0.014    -.6585758   -.0737219
+------------------------------------------------------------------------------
+
+.         lincom sandy1_mid_floodrisk_mang*2 + sandy1_mid_floodrisk + mid_flood
+> risk_mang*2 + mid_floodrisk + mdistancegroup*2 + sandy1after + sandy1mang*2
+
+ ( 1)  2*mdistancegroup + 2*sandy1_mid_floodrisk_mang + sandy1_mid_floodrisk +
+       mid_floodrisk + 2*mid_floodrisk_mang + sandy1after + 2*sandy1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.4879778   .1505718    -3.24   0.001    -.7830933   -.1928623
+------------------------------------------------------------------------------
+
+.         lincom sandy1_mid_floodrisk_mang*4 + sandy1_mid_floodrisk + mid_flood
+> risk_mang*4 + mid_floodrisk + mdistancegroup*4 + sandy1after + sandy1mang*4
+
+ ( 1)  4*mdistancegroup + 4*sandy1_mid_floodrisk_mang + sandy1_mid_floodrisk +
+       mid_floodrisk + 4*mid_floodrisk_mang + sandy1after + 4*sandy1mang = 0
+
+------------------------------------------------------------------------------
+salesprice~g | Coefficient  Std. err.      t    P>|t|     [95% conf. interval]
+-------------+----------------------------------------------------------------
+         (1) |  -.7316356    .191248    -3.83   0.000    -1.106475   -.3567962
+------------------------------------------------------------------------------
+
+. 
+. log close
+      name:  <unnamed>
+       log:  /raid/users/tliu99/coastal_regs_aug2023/Main_flood.log
+  log type:  text
+ closed on:   3 Aug 2025, 21:57:59
+-------------------------------------------------------------------------------
